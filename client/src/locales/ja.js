@@ -6,6 +6,7 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '在庫補充',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -112,6 +113,11 @@ export default {
     onTimeDelivery: '定時配達',
     itemsCount: '{count}件',
     quantity: '数量',
+    submittedOrders: '発注済み補充注文',
+    noSubmittedOrders: 'まだ補充注文はありません。',
+    submittedDate: '発注日',
+    leadTime: 'リードタイム',
+    leadTimeDays: '{days}日',
     table: {
       orderNumber: '注文番号',
       orderId: '注文ID',
@@ -198,12 +204,42 @@ export default {
     allMonths: 'すべての月'
   },
 
+  // Restocking
+  restocking: {
+    title: '在庫補充',
+    description: '需要予測に基づく補充推薦を確認し、発注します',
+    budget: '予算',
+    availableBudget: '利用可能予算',
+    selectedTotal: '選択合計',
+    remaining: '残余予算',
+    leadTime: '発注リードタイム',
+    days: '日',
+    placeOrder: '発注する',
+    placing: '発注中...',
+    success: '注文 {orderNumber} が正常に発注されました。',
+    viewOrders: '注文を表示',
+    noCandidates: '選択した予算での補充候補がありません。',
+    overBudget: '選択合計が予算を超えています。',
+    table: {
+      candidates: '補充候補',
+      sku: 'SKU',
+      product: '製品',
+      category: 'カテゴリ',
+      trend: 'トレンド',
+      quantity: '数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      leadTime: 'リードタイム'
+    }
+  },
+
   // Statuses
   status: {
     delivered: '配達済み',
     shipped: '出荷済み',
     processing: '処理中',
     backordered: 'バックオーダー',
+    submitted: '発注済み',
     inStock: '在庫あり',
     lowStock: '在庫僅少',
     adequate: '適量'

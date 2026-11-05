@@ -73,15 +73,24 @@ class TestDemandEndpoints:
         # Check for the new items we added
         skus = [item["item_sku"] for item in data]
 
-        # Should have Temperature Sensor Module and Logic Controller Board
-        assert "SNR-420" in skus, "Missing Temperature Sensor Module"
-        assert "CTL-330" in skus, "Missing Logic Controller Board"
+        # Should have Humidity Sensor Module and H-Bridge Motor Driver
+        assert "HMD-202" in skus, "Missing Humidity Sensor Module"
+        assert "DRV-405" in skus, "Missing H-Bridge Motor Driver"
 
         # Verify they are marked as stable
         for item in data:
-            if item["item_sku"] in ["SNR-420", "CTL-330"]:
+            if item["item_sku"] in ["HMD-202", "DRV-405"]:
                 assert item["trend"].lower() == "stable", \
                     f"New item {item['item_name']} should have stable trend"
+
+    def test_demand_forecast_skus_exist_in_inventory(self, client):
+        """Test that every forecast refers to a real inventory item."""
+        forecasts = client.get("/api/demand").json()
+        inventory = {item["sku"]: item for item in client.get("/api/inventory").json()}
+
+        for forecast in forecasts:
+            assert forecast["item_sku"] in inventory, f"Unknown SKU {forecast['item_sku']}"
+            assert forecast["item_name"] == inventory[forecast["item_sku"]]["name"]
 
 
 class TestBacklogEndpoints:

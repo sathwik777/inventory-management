@@ -5,6 +5,46 @@
       <p>{{ t('orders.description') }}</p>
     </div>
 
+    <!-- Submitted Restock Orders — independent of main order filters -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{ t('orders.submittedOrders') }}</h3>
+      </div>
+      <div v-if="restockLoading" class="loading">{{ t('common.loading') }}</div>
+      <div v-else-if="restockError" class="error">{{ restockError }}</div>
+      <div v-else-if="restockOrders.length === 0" class="restock-empty">{{ t('orders.noSubmittedOrders') }}</div>
+      <div v-else class="table-container">
+        <table class="restock-table">
+          <thead>
+            <tr>
+              <th class="col-order-number">{{ t('orders.table.orderNumber') }}</th>
+              <th class="col-date">{{ t('orders.submittedDate') }}</th>
+              <th class="col-items">{{ t('orders.table.items') }}</th>
+              <th class="col-value">{{ t('orders.table.totalValue') }}</th>
+              <th class="col-lead">{{ t('orders.leadTime') }}</th>
+              <th class="col-date">{{ t('orders.table.expectedDelivery') }}</th>
+              <th class="col-status">{{ t('orders.table.status') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ro in restockOrders" :key="ro.id">
+              <td class="col-order-number"><strong>{{ ro.order_number }}</strong></td>
+              <td class="col-date">{{ formatDate(ro.submitted_date) }}</td>
+              <td class="col-items">{{ t('orders.itemsCount', { count: ro.items.length }) }}</td>
+              <td class="col-value"><strong>{{ formatCurrencyWithDecimals(ro.total_cost, currentCurrency, 2) }}</strong></td>
+              <td class="col-lead">{{ t('orders.leadTimeDays', { days: ro.lead_time_days }) }}</td>
+              <td class="col-date">{{ formatDate(ro.expected_delivery) }}</td>
+              <td class="col-status">
+                <span :class="['badge', getOrderStatusClass(ro.status)]">
+                  {{ t(`status.${ro.status.toLowerCase()}`) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
@@ -83,6 +123,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import { formatCurrencyWithDecimals } from '../utils/currency'
 
 export default {
   name: 'Orders',
@@ -95,6 +136,10 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+
+    const restockLoading = ref(true)
+    const restockError = ref(null)
+    const restockOrders = ref([])
 
     // Use shared filters
     const {
@@ -153,7 +198,21 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    const loadRestockOrders = async () => {
+      try {
+        restockLoading.value = true
+        restockOrders.value = await api.getRestockOrders()
+      } catch (err) {
+        restockError.value = 'Failed to load restock orders: ' + err.message
+      } finally {
+        restockLoading.value = false
+      }
+    }
+
+    onMounted(() => {
+      loadOrders()
+      loadRestockOrders()
+    })
 
     return {
       t,
@@ -164,14 +223,35 @@ export default {
       getOrderStatusClass,
       formatDate,
       currencySymbol,
+      currentCurrency,
+      formatCurrencyWithDecimals,
       translateProductName,
-      translateCustomerName
+      translateCustomerName,
+      restockLoading,
+      restockError,
+      restockOrders
     }
   }
 }
 </script>
 
 <style scoped>
+.restock-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-size: 0.938rem;
+}
+
+.restock-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.col-lead {
+  width: 110px;
+}
+
 /* Fixed table layout to prevent column shifting */
 .orders-table {
   table-layout: fixed;

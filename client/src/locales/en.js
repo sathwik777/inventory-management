@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -112,6 +113,11 @@ export default {
     onTimeDelivery: 'On-Time Delivery',
     itemsCount: '{count} items',
     quantity: 'Qty',
+    submittedOrders: 'Submitted Restock Orders',
+    noSubmittedOrders: 'No restock orders submitted yet.',
+    submittedDate: 'Submitted Date',
+    leadTime: 'Lead Time',
+    leadTimeDays: '{days} days',
     table: {
       orderNumber: 'Order Number',
       orderId: 'Order ID',
@@ -198,12 +204,42 @@ export default {
     allMonths: 'All Months'
   },
 
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Review demand-based restock recommendations and place orders',
+    budget: 'Budget',
+    availableBudget: 'Available Budget',
+    selectedTotal: 'Selected Total',
+    remaining: 'Remaining Budget',
+    leadTime: 'Order Lead Time',
+    days: 'days',
+    placeOrder: 'Place Order',
+    placing: 'Placing...',
+    success: 'Order {orderNumber} placed successfully.',
+    viewOrders: 'View Orders',
+    noCandidates: 'No restock candidates for the selected budget.',
+    overBudget: 'Selected total exceeds the budget.',
+    table: {
+      candidates: 'Restock Candidates',
+      sku: 'SKU',
+      product: 'Product',
+      category: 'Category',
+      trend: 'Trend',
+      quantity: 'Quantity',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      leadTime: 'Lead Time'
+    }
+  },
+
   // Statuses
   status: {
     delivered: 'Delivered',
     shipped: 'Shipped',
     processing: 'Processing',
     backordered: 'Backordered',
+    submitted: 'Submitted',
     inStock: 'In Stock',
     lowStock: 'Low Stock',
     adequate: 'Adequate'
